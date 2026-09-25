@@ -2,19 +2,24 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Star, ShoppingBag, Heart, Check } from 'lucide-react';
 import useCart from '../../hooks/useCart';
+import useWishlist from '../../hooks/useWishlist';
 
 export const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
+  const { isWishlisted, toggleWishlist } = useWishlist();
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
   const navigate = useNavigate();
+
+  const productId = product._id || product.id;
+  const wishlisted = isWishlisted(productId);
 
   const handleAdd = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     setAdding(true);
-    const result = await addToCart(product._id || product.id, 1);
+    const result = await addToCart(productId, 1);
     setAdding(false);
 
     if (result?.requireAuth) {
@@ -25,6 +30,16 @@ export const ProductCard = ({ product }) => {
     if (result?.success) {
       setAdded(true);
       setTimeout(() => setAdded(false), 2000);
+    }
+  };
+
+  const handleWishlistToggle = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const result = await toggleWishlist(productId);
+    if (result?.requireAuth) {
+      navigate('/login', { state: { from: { pathname: '/shop' } } });
     }
   };
 
@@ -55,16 +70,17 @@ export const ProductCard = ({ product }) => {
           </span>
         </div>
 
-        {/* Wishlist Placeholder Icon */}
+        {/* Wishlist Heart Icon Button */}
         <button
-          className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/80 hover:bg-white text-gray-400 hover:text-red-500 flex items-center justify-center transition-colors shadow-xs"
-          title="Add to Wishlist"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
+          className={`absolute top-2.5 right-2.5 w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-xs ${
+            wishlisted
+              ? 'bg-red-50 text-red-600 font-bold scale-105'
+              : 'bg-white/80 hover:bg-white text-gray-400 hover:text-red-500'
+          }`}
+          title={wishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+          onClick={handleWishlistToggle}
         >
-          <Heart className="w-4 h-4" />
+          <Heart className={`w-4 h-4 ${wishlisted ? 'fill-red-600 text-red-600' : ''}`} />
         </button>
       </div>
 

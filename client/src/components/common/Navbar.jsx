@@ -10,10 +10,13 @@ import {
   X, 
   LogOut,
   Sparkles,
-  Info
+  Info,
+  Package,
+  ShieldCheck
 } from 'lucide-react';
 import useAuth from '../../hooks/useAuth';
 import useCart from '../../hooks/useCart';
+import useWishlist from '../../hooks/useWishlist';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -22,6 +25,7 @@ const Navbar = () => {
   
   const { user, mongoUser, logout, isAuthenticated } = useAuth();
   const { cartCount, cartMessage, dismissMessage } = useCart();
+  const { wishlistCount, wishlistMessage, dismissWishlistMessage } = useWishlist();
   const navigate = useNavigate();
 
   const handleSearchSubmit = (e) => {
@@ -42,21 +46,25 @@ const Navbar = () => {
     }
   };
 
+  const isAdmin = mongoUser?.role === 'admin';
+  const activeMessage = cartMessage || wishlistMessage;
+  const handleDismissMessage = cartMessage ? dismissMessage : dismissWishlistMessage;
+
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-xs">
       
       {/* Dynamic Toast / Notification Banner */}
-      {cartMessage ? (
+      {activeMessage ? (
         <div className={`text-xs font-semibold py-2 px-4 text-center flex items-center justify-center gap-2 animate-in fade-in ${
-          cartMessage.type === 'error'
+          activeMessage.type === 'error'
             ? 'bg-red-600 text-white'
-            : cartMessage.type === 'info'
+            : activeMessage.type === 'info'
             ? 'bg-[#1B4332] text-[#8BC34A]'
             : 'bg-[#2E7D32] text-white'
         }`}>
           <Info className="w-3.5 h-3.5" />
-          <span>{cartMessage.text}</span>
-          <button onClick={dismissMessage} className="ml-2 hover:opacity-80">
+          <span>{activeMessage.text}</span>
+          <button onClick={handleDismissMessage} className="ml-2 hover:opacity-80">
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -109,12 +117,21 @@ const Navbar = () => {
             <Link to="/shop" className="hover:text-[#2E7D32] transition-colors">
               Shop
             </Link>
-            <Link to="/shop?category=Organic" className="hover:text-[#2E7D32] transition-colors">
-              Categories
-            </Link>
-            <Link to="/about" className="hover:text-[#2E7D32] transition-colors">
-              About
-            </Link>
+            {isAuthenticated && (
+              <>
+                <Link to="/sell" className="hover:text-[#2E7D32] transition-colors flex items-center gap-1 font-bold text-[#2E7D32]">
+                  Sell 🌱
+                </Link>
+                <Link to="/orders" className="hover:text-[#2E7D32] transition-colors">
+                  Orders
+                </Link>
+              </>
+            )}
+            {isAdmin && (
+              <Link to="/admin" className="text-[#2E7D32] font-bold flex items-center gap-1 bg-[#E8F5E9] px-3 py-1 rounded-full text-xs">
+                <ShieldCheck className="w-3.5 h-3.5" /> Admin Dashboard
+              </Link>
+            )}
           </nav>
 
           {/* Right Actions: Wishlist, Cart, User Account */}
@@ -124,9 +141,11 @@ const Navbar = () => {
               className="p-2 text-gray-600 hover:text-[#2E7D32] hover:bg-[#E8F5E9] rounded-full transition-colors relative"
               title="Wishlist"
             >
-              <Heart className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-4 h-4 bg-gray-400 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                0
+              <Heart className={`w-5 h-5 ${wishlistCount > 0 ? 'text-red-500 fill-red-500' : ''}`} />
+              <span className={`absolute top-1 right-1 w-4 h-4 text-white text-[10px] font-bold rounded-full flex items-center justify-center ${
+                wishlistCount > 0 ? 'bg-red-500' : 'bg-gray-400'
+              }`}>
+                {wishlistCount}
               </span>
             </Link>
 
@@ -166,27 +185,63 @@ const Navbar = () => {
 
                 {/* Dropdown menu */}
                 {userDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-lg border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
+                  <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-lg border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
                     <div className="px-4 py-2 border-b border-gray-50">
                       <p className="text-xs font-bold text-[#1F2937] truncate">{mongoUser?.name || user?.displayName}</p>
                       <p className="text-[11px] text-gray-500 truncate">{user?.email}</p>
+                      {isAdmin && (
+                        <span className="inline-block mt-1 text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full uppercase">
+                          Admin Privileges
+                        </span>
+                      )}
                     </div>
+
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[#2E7D32] bg-[#E8F5E9]/50 hover:bg-[#E8F5E9] transition-colors"
+                      >
+                        <ShieldCheck className="w-4 h-4" />
+                        Admin Dashboard
+                      </Link>
+                    )}
+
                     <Link
                       to="/account"
                       onClick={() => setUserDropdownOpen(false)}
                       className="flex items-center gap-2 px-4 py-2 text-xs text-gray-700 hover:bg-[#E8F5E9] hover:text-[#2E7D32] transition-colors"
                     >
                       <UserIcon className="w-4 h-4" />
-                      Account
+                      Account & Profile
                     </Link>
+
                     <Link
-                      to="/profile"
+                      to="/orders"
                       onClick={() => setUserDropdownOpen(false)}
                       className="flex items-center gap-2 px-4 py-2 text-xs text-gray-700 hover:bg-[#E8F5E9] hover:text-[#2E7D32] transition-colors"
                     >
-                      <UserIcon className="w-4 h-4" />
-                      My Profile
+                      <Package className="w-4 h-4" />
+                      My Orders
                     </Link>
+
+                    <Link
+                      to="/my-products"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2 text-xs text-gray-700 hover:bg-[#E8F5E9] hover:text-[#2E7D32] transition-colors"
+                    >
+                      <Leaf className="w-4 h-4" />
+                      My Listed Products
+                    </Link>
+
+                    <Link
+                      to="/sell"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[#2E7D32] hover:bg-[#E8F5E9] transition-colors"
+                    >
+                      <span>🌱 Sell a Product</span>
+                    </Link>
+
                     <Link
                       to="/cart"
                       onClick={() => setUserDropdownOpen(false)}
@@ -195,9 +250,10 @@ const Navbar = () => {
                       <ShoppingBag className="w-4 h-4" />
                       My Basket ({cartCount})
                     </Link>
+
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left flex items-center gap-2 px-4 py-2 text-xs text-red-600 hover:bg-red-50 transition-colors"
+                      className="w-full text-left flex items-center gap-2 px-4 py-2 text-xs text-red-600 hover:bg-red-50 transition-colors border-t border-gray-50 mt-1"
                     >
                       <LogOut className="w-4 h-4" />
                       Logout
@@ -264,18 +320,50 @@ const Navbar = () => {
               >
                 Shop
               </Link>
-              <Link
-                to="/shop?category=Organic"
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-lg hover:bg-[#E8F5E9] hover:text-[#2E7D32]"
-              >
-                Categories
-              </Link>
+              {isAuthenticated && (
+                <>
+                  <Link
+                    to="/sell"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-3 py-2 rounded-lg bg-[#E8F5E9] text-[#2E7D32] font-bold"
+                  >
+                    Sell on GreenBasket 🌱
+                  </Link>
+                  <Link
+                    to="/my-products"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-3 py-2 rounded-lg hover:bg-[#E8F5E9] hover:text-[#2E7D32]"
+                  >
+                    My Listed Products
+                  </Link>
+                  <Link
+                    to="/orders"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-3 py-2 rounded-lg hover:bg-[#E8F5E9] hover:text-[#2E7D32]"
+                  >
+                    My Orders
+                  </Link>
+                </>
+              )}
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3 py-2 rounded-lg bg-[#E8F5E9] text-[#2E7D32] font-bold"
+                >
+                  Admin Dashboard
+                </Link>
+              )}
             </div>
 
             <div className="pt-2 border-t border-gray-100 flex items-center justify-around px-2">
-              <Link to="/wishlist" className="flex items-center gap-1.5 text-xs text-gray-600">
-                <Heart className="w-4 h-4 text-[#2E7D32]" /> Wishlist (0)
+              <Link 
+                to="/wishlist" 
+                onClick={() => setMobileMenuOpen(false)} 
+                className="flex items-center gap-1.5 text-xs text-gray-600 font-semibold"
+              >
+                <Heart className={`w-4 h-4 ${wishlistCount > 0 ? 'text-red-500 fill-red-500' : 'text-[#2E7D32]'}`} /> 
+                Wishlist ♡ {wishlistCount}
               </Link>
               <Link to="/cart" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-1.5 text-xs font-bold text-[#2E7D32]">
                 <ShoppingBag className="w-4 h-4 text-[#2E7D32]" /> Cart ({cartCount})
@@ -286,11 +374,11 @@ const Navbar = () => {
               {isAuthenticated ? (
                 <div className="space-y-2">
                   <Link
-                    to="/profile"
+                    to="/account"
                     onClick={() => setMobileMenuOpen(false)}
                     className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-white bg-[#2E7D32] rounded-xl"
                   >
-                    <UserIcon className="w-4 h-4" /> My Profile ({mongoUser?.name || 'Account'})
+                    <UserIcon className="w-4 h-4" /> Account & Orders
                   </Link>
                   <button
                     onClick={() => {

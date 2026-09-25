@@ -87,6 +87,12 @@ const productSchema = new mongoose.Schema(
       default: false,
       index: true,
     },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+      index: true,
+    },
   },
   {
     timestamps: true,

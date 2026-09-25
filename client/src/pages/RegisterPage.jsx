@@ -69,7 +69,7 @@ const RegisterPage = () => {
             <Leaf className="w-6 h-6" />
           </div>
           <h2 className="text-2xl font-bold text-[#1F2937] tracking-tight">
-            Start your greener shopping journey.
+            Create your GreenBasket account 🌱
           </h2>
           <p className="text-xs text-[#6B7280]">
             Join GreenBasket 🌱 and discover eco-conscious living

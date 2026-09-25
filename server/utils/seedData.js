@@ -233,11 +233,31 @@ export const initialProducts = [
   }
 ];
 
+import User from '../models/User.js';
+
 export const seedProductsDB = async () => {
   try {
+    let defaultOwner = await User.findOne({ role: 'admin' });
+    if (!defaultOwner) {
+      defaultOwner = await User.findOne();
+    }
+    if (!defaultOwner) {
+      defaultOwner = await User.create({
+        firebaseUid: 'system-admin-seed-uid',
+        name: 'GreenBasket Admin',
+        email: 'admin@greenbasket.com',
+        role: 'admin',
+      });
+    }
+
     const count = await Product.countDocuments();
+    const productsWithOwner = initialProducts.map((p) => ({
+      ...p,
+      owner: defaultOwner._id,
+    }));
+
     if (count === 0) {
-      await Product.insertMany(initialProducts);
+      await Product.insertMany(productsWithOwner);
       console.log(`[Seed Success] Inserted ${initialProducts.length} initial eco products into MongoDB with numbers 1 to 10.`);
     } else {
       for (const item of initialProducts) {
@@ -246,7 +266,11 @@ export const seedProductsDB = async () => {
           { $set: { productNumber: item.productNumber, images: item.images } }
         );
       }
-      console.log(`[Seed Success] Updated ${initialProducts.length} products in MongoDB Atlas with sequential product numbers 1 to 10.`);
+      await Product.updateMany(
+        { owner: { $exists: false } },
+        { $set: { owner: defaultOwner._id } }
+      );
+      console.log(`[Seed Success] Updated ${initialProducts.length} products in MongoDB Atlas with sequential product numbers 1 to 10 and valid owner.`);
     }
   } catch (err) {
     console.error('[Seed Error] Failed to seed/update product database:', err.message);

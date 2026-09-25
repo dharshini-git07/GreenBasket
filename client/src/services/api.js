@@ -54,6 +54,26 @@ export const getProductByIdApi = async (idOrSlug) => {
   return response.data;
 };
 
+export const getMyProductsApi = async () => {
+  const response = await api.get('/products/my-products');
+  return response.data;
+};
+
+export const createProductApi = async (productData) => {
+  const response = await api.post('/products', productData);
+  return response.data;
+};
+
+export const updateProductApi = async (id, productData) => {
+  const response = await api.put(`/products/${id}`, productData);
+  return response.data;
+};
+
+export const deleteProductApi = async (id) => {
+  const response = await api.delete(`/products/${id}`);
+  return response.data;
+};
+
 /** Cart APIs */
 export const getCartApi = async () => {
   const response = await api.get('/cart');
@@ -77,6 +97,94 @@ export const removeFromCartApi = async (productId) => {
 
 export const clearCartApi = async () => {
   const response = await api.delete('/cart');
+  return response.data;
+};
+
+/** Wishlist APIs */
+export const getWishlistApi = async () => {
+  const response = await api.get('/wishlist');
+  return response.data;
+};
+
+export const addToWishlistApi = async (productId) => {
+  const response = await api.post(`/wishlist/${productId}`);
+  return response.data;
+};
+
+export const removeFromWishlistApi = async (productId) => {
+  const response = await api.delete(`/wishlist/${productId}`);
+  return response.data;
+};
+
+/** Order APIs */
+export const createOrderApi = async (orderData) => {
+  const response = await api.post('/orders', orderData);
+  return response.data;
+};
+
+export const getUserOrdersApi = async () => {
+  const response = await api.get('/orders');
+  return response.data;
+};
+
+export const getOrderByIdApi = async (orderId) => {
+  const response = await api.get(`/orders/${orderId}`);
+  return response.data;
+};
+
+/** Admin APIs */
+export const getAdminStatsApi = async () => {
+  const response = await api.get('/admin/stats');
+  return response.data;
+};
+
+export const getAdminProductsApi = async () => {
+  const response = await api.get('/admin/products');
+  return response.data;
+};
+
+export const createAdminProductApi = async (productData) => {
+  const response = await api.post('/admin/products', productData);
+  return response.data;
+};
+
+export const updateAdminProductApi = async (id, productData) => {
+  const response = await api.put(`/admin/products/${id}`, productData);
+  return response.data;
+};
+
+export const deleteAdminProductApi = async (id) => {
+  const response = await api.delete(`/admin/products/${id}`);
+  return response.data;
+};
+
+export const getAdminOrdersApi = async () => {
+  const response = await api.get('/admin/orders');
+  return response.data;
+};
+
+export const updateAdminOrderStatusApi = async (id, statusData) => {
+  const response = await api.put(`/admin/orders/${id}/status`, statusData);
+  return response.data;
+};
+
+export const getAdminUsersApi = async () => {
+  const response = await api.get('/admin/users');
+  return response.data;
+};
+
+export const getAdminSellersApi = async () => {
+  const response = await api.get('/admin/sellers');
+  return response.data;
+};
+
+export const getAdminBuyersApi = async () => {
+  const response = await api.get('/admin/buyers');
+  return response.data;
+};
+
+export const makeAdminApi = async () => {
+  const response = await api.post('/admin/make-admin');
   return response.data;
 };
 

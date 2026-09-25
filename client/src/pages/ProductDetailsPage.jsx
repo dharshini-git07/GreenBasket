@@ -11,10 +11,12 @@ import {
   RotateCcw,
   Sparkles,
   Plus,
-  Minus
+  Minus,
+  Heart
 } from 'lucide-react';
 import { getProductByIdApi } from '../services/api';
 import useCart from '../hooks/useCart';
+import useWishlist from '../hooks/useWishlist';
 import { LoadingPage } from '../components/common/LoadingSpinner';
 import ErrorMessage from '../components/common/ErrorMessage';
 
@@ -22,6 +24,7 @@ const ProductDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { isWishlisted, toggleWishlist } = useWishlist();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -29,6 +32,17 @@ const ProductDetailsPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
+
+  const productId = product?._id || product?.id;
+  const wishlisted = isWishlisted(productId);
+
+  const handleWishlistToggle = async () => {
+    if (!productId) return;
+    const result = await toggleWishlist(productId);
+    if (result?.requireAuth) {
+      navigate('/login', { state: { from: { pathname: `/product/${id}` } } });
+    }
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -233,30 +247,45 @@ const ProductDetailsPage = () => {
               </div>
             )}
 
-            {/* Add to Cart CTA */}
-            <button
-              onClick={handleAddToCart}
-              disabled={adding || isOutOfStock}
-              className={`w-full py-4 text-xs font-semibold rounded-full shadow-md transition-all duration-200 flex items-center justify-center gap-2 ${
-                added
-                  ? 'bg-[#16A34A] text-white'
-                  : isOutOfStock
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-[#2E7D32] hover:bg-[#1B4332] text-white'
-              }`}
-            >
-              {adding ? (
-                <span className="animate-spin text-xs">⏳</span>
-              ) : added ? (
-                <>
-                  <Check className="w-4 h-4" /> Added to Basket! 🌱
-                </>
-              ) : (
-                <>
-                  <ShoppingBag className="w-4 h-4" /> Add to Basket
-                </>
-              )}
-            </button>
+            {/* Action Buttons: Add to Cart + Wishlist */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={handleAddToCart}
+                disabled={adding || isOutOfStock}
+                className={`flex-1 py-4 px-6 text-xs font-semibold rounded-full shadow-md transition-all duration-200 flex items-center justify-center gap-2 ${
+                  added
+                    ? 'bg-[#16A34A] text-white'
+                    : isOutOfStock
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-[#2E7D32] hover:bg-[#1B4332] text-white'
+                }`}
+              >
+                {adding ? (
+                  <span className="animate-spin text-xs">⏳</span>
+                ) : added ? (
+                  <>
+                    <Check className="w-4 h-4" /> Added to Basket! 🌱
+                  </>
+                ) : (
+                  <>
+                    <ShoppingBag className="w-4 h-4" /> Add to Basket
+                  </>
+                )}
+              </button>
+
+              <button
+                onClick={handleWishlistToggle}
+                className={`py-4 px-6 text-xs font-bold rounded-full border transition-all duration-200 flex items-center justify-center gap-2 ${
+                  wishlisted
+                    ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
+                    : 'bg-white text-gray-700 border-gray-200 hover:border-[#2E7D32] hover:text-[#2E7D32]'
+                }`}
+                title={wishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+              >
+                <Heart className={`w-4 h-4 ${wishlisted ? 'fill-red-600 text-red-600' : ''}`} />
+                <span>{wishlisted ? '♥ Added to Wishlist' : '♡ Add to Wishlist'}</span>
+              </button>
+            </div>
           </div>
 
           {/* Value props */}

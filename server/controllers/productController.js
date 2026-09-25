@@ -80,6 +80,7 @@ export const getProducts = async (req, res, next) => {
 
     const total = await Product.countDocuments(query);
     const products = await Product.find(query)
+      .populate('owner', 'name email')
       .sort(sortOptions)
       .skip(skip)
       .limit(limitNum);
@@ -108,7 +109,30 @@ export const getProducts = async (req, res, next) => {
  */
 export const getFeaturedProducts = async (req, res, next) => {
   try {
-    const products = await Product.find({ featured: true }).sort({ productNumber: 1 }).limit(8);
+    const products = await Product.find({ featured: true })
+      .populate('owner', 'name email')
+      .sort({ productNumber: 1 })
+      .limit(8);
+
+    res.status(200).json({
+      success: true,
+      products,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    Get current user's listed products
+ * @route   GET /api/products/my-products
+ * @access  Private (User/Admin)
+ */
+export const getMyProducts = async (req, res, next) => {
+  try {
+    const products = await Product.find({ owner: req.user._id })
+      .sort({ createdAt: -1 });
+
     res.status(200).json({
       success: true,
       products,
@@ -129,10 +153,10 @@ export const getProductByIdOrSlug = async (req, res, next) => {
     let product;
 
     if (mongoose.Types.ObjectId.isValid(id)) {
-      product = await Product.findById(id);
+      product = await Product.findById(id).populate('owner', 'name email');
     }
     if (!product) {
-      product = await Product.findOne({ slug: id });
+      product = await Product.findOne({ slug: id }).populate('owner', 'name email');
     }
 
     if (!product) {
@@ -152,16 +176,70 @@ export const getProductByIdOrSlug = async (req, res, next) => {
 };
 
 /**
- * @desc    Create a product (Admin)
+ * @desc    Create a product (Any authenticated user can list a product for sale)
  * @route   POST /api/products
- * @access  Private / Admin
+ * @access  Private (User / Admin)
  */
 export const createProduct = async (req, res, next) => {
   try {
-    const product = await Product.create(req.body);
+    const { 
+      name, 
+      price, 
+      category, 
+      stock, 
+      ecoScore, 
+      description, 
+      shortDescription, 
+      images,
+      image,
+      featured,
+      ecoAttributes 
+    } = req.body;
+
+    if (!name || price === undefined || !category || stock === undefined) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide required fields: Product Name, Price, Category, and Stock.',
+      });
+    }
+
+    const slug = req.body.slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + Date.now().toString().slice(-4);
+
+    const imageList = [];
+    if (images && Array.isArray(images) && images.length > 0) {
+      imageList.push(...images);
+    } else if (image) {
+      imageList.push(image);
+    } else {
+      imageList.push('/products/product-01.jpg');
+    }
+
+    const count = await Product.countDocuments();
+
+    const product = await Product.create({
+      name: name.trim(),
+      slug,
+      price: Number(price),
+      category: category.trim(),
+      stock: Number(stock),
+      ecoScore: Number(ecoScore || 90),
+      description: description ? description.trim() : name.trim(),
+      shortDescription: shortDescription ? shortDescription.trim() : (description || name).trim(),
+      images: imageList,
+      featured: Boolean(featured),
+      owner: req.user._id, // Enforce authenticated MongoDB user as owner
+      ecoAttributes: ecoAttributes || {
+        reusable: true,
+        sustainableMaterial: true,
+        plasticFree: true,
+      },
+      productNumber: count + 1,
+    });
+
     res.status(201).json({
       success: true,
-      data: product,
+      message: 'Product listed for sale successfully 🌱',
+      product,
     });
   } catch (error) {
     next(error);
@@ -169,24 +247,42 @@ export const createProduct = async (req, res, next) => {
 };
 
 /**
- * @desc    Update a product (Admin)
+ * @desc    Update a product (Owner or Admin only)
  * @route   PUT /api/products/:id
- * @access  Private / Admin
+ * @access  Private (User / Admin)
  */
 export const updateProduct = async (req, res, next) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    // Permission check: Must be Admin OR Product Owner
+    const isOwner = product.owner && product.owner.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({
+        success: false,
+        message: 'Forbidden. You can only manage your own products.',
+      });
+    }
+
+    // Prevent overwriting owner via request body
+    const updateData = { ...req.body };
+    delete updateData.owner;
+
+    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
       runValidators: true,
     });
 
-    if (!product) {
-      return res.status(404).json({ success: false, message: 'Product not found' });
-    }
-
     res.status(200).json({
       success: true,
-      data: product,
+      message: 'Product updated successfully.',
+      product: updatedProduct,
     });
   } catch (error) {
     next(error);
@@ -194,21 +290,34 @@ export const updateProduct = async (req, res, next) => {
 };
 
 /**
- * @desc    Delete a product (Admin)
+ * @desc    Delete a product (Owner or Admin only)
  * @route   DELETE /api/products/:id
- * @access  Private / Admin
+ * @access  Private (User / Admin)
  */
 export const deleteProduct = async (req, res, next) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
+    const product = await Product.findById(req.params.id);
 
     if (!product) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
 
+    // Permission check: Must be Admin OR Product Owner
+    const isOwner = product.owner && product.owner.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({
+        success: false,
+        message: 'Forbidden. You can only manage your own products.',
+      });
+    }
+
+    await Product.findByIdAndDelete(req.params.id);
+
     res.status(200).json({
       success: true,
-      message: 'Product deleted successfully',
+      message: 'Product deleted successfully.',
     });
   } catch (error) {
     next(error);
