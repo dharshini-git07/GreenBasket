@@ -19,6 +19,7 @@ import ProfilePage from './pages/ProfilePage';
 import SellProductPage from './pages/SellProductPage';
 import MyProductsPage from './pages/MyProductsPage';
 import GreenGuidePage from './pages/GreenGuidePage';
+import ContactPage from './pages/ContactPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminProductsPage from './pages/AdminProductsPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
@@ -64,6 +65,7 @@ function App() {
                 <Route path="shop" element={<ShopPage />} />
                 <Route path="product/:id" element={<ProductDetailsPage />} />
                 <Route path="green-guide" element={<GreenGuidePage />} />
+                <Route path="contact" element={<ContactPage />} />
                 <Route path="login" element={<LoginPage />} />
                 <Route path="register" element={<RegisterPage />} />
                 

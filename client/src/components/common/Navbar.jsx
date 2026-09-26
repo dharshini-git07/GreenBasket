@@ -119,6 +119,9 @@ const Navbar = () => {
             <Link to="/shop" className="hover:text-[#2E7D32] transition-colors">
               Shop
             </Link>
+            <Link to="/contact" className="hover:text-[#2E7D32] transition-colors">
+              Contact Us
+            </Link>
             <Link to="/green-guide" className="hover:text-[#2E7D32] transition-colors flex items-center gap-1 font-semibold text-[#2E7D32] bg-[#E8F5E9]/70 px-2.5 py-1 rounded-full text-xs">
               <Sparkles className="w-3.5 h-3.5 text-[#2E7D32]" /> GreenGuide AI 🌱
             </Link>
@@ -324,6 +327,13 @@ const Navbar = () => {
                 className="px-3 py-2 rounded-lg hover:bg-[#E8F5E9] hover:text-[#2E7D32]"
               >
                 Shop
+              </Link>
+              <Link
+                to="/contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-lg hover:bg-[#E8F5E9] hover:text-[#2E7D32]"
+              >
+                Contact Us
               </Link>
               <Link
                 to="/green-guide"
