@@ -84,7 +84,7 @@ export const requireAdmin = (req, res, next) => {
   } else {
     res.status(403).json({
       success: false,
-      message: 'Access denied. Admin authorization required.',
+      message: 'Admin access required.',
     });
   }
 };

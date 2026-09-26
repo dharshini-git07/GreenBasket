@@ -61,7 +61,7 @@ const CartPage = () => {
   }
 
   const handleCheckoutClick = () => {
-    setCheckoutMessage('One step closer to a greener choice! Checkout module will be activated in Module 3 🌱');
+    navigate('/checkout');
   };
 
   return (
@@ -175,7 +175,7 @@ const CartPage = () => {
 
         {/* Right Column: Authoritative Order Summary */}
         <div className="space-y-6">
-          <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-6">
+          <div className="bg-[#FFFFFF] p-6 rounded-3xl border border-gray-100 shadow-sm space-y-6">
             <h3 className="text-base font-bold text-[#1F2937]">Order Summary</h3>
 
             <div className="space-y-3 text-xs">
@@ -193,22 +193,12 @@ const CartPage = () => {
               </div>
             </div>
 
-            {/* Notification message */}
-            {checkoutMessage && (
-              <div className="p-3 bg-[#E8F5E9] text-[#2E7D32] rounded-xl text-xs font-medium space-y-1">
-                <p className="font-bold flex items-center gap-1">
-                  <Sparkles className="w-3.5 h-3.5" /> Next Step:
-                </p>
-                <p>{checkoutMessage}</p>
-              </div>
-            )}
-
             {/* Checkout Button */}
             <button
               onClick={handleCheckoutClick}
               className="w-full py-4 text-xs font-semibold text-white bg-[#2E7D32] hover:bg-[#1B4332] rounded-full shadow-md transition-all flex items-center justify-center gap-2 group"
             >
-              One step closer to a greener choice.
+              Proceed to Checkout 🌱
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
 

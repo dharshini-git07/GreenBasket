@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
   const clearError = () => setAuthError(null);
 
   // Auth Operations
-  const handleRegister = async (name, email, password) => {
+  const handleRegister = async (name, email, password, role = 'user') => {
     setLoading(true);
     setAuthError(null);
     try {
@@ -70,12 +70,13 @@ export const AuthProvider = ({ children }) => {
         name,
         email,
         photoURL: '',
+        role: ['user', 'admin'].includes(role) ? role : 'user',
       });
 
       if (syncResult.success) {
         setMongoUser(syncResult.data);
       }
-      return res.user;
+      return { user: res.user, mongoUser: syncResult.data };
     } catch (err) {
       setAuthError(err.message);
       throw err;
@@ -123,6 +124,28 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const refreshMongoUser = async () => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) return null;
+
+    try {
+      const syncResult = await syncUserApi({
+        firebaseUid: currentUser.uid,
+        name: currentUser.displayName || currentUser.email.split('@')[0],
+        email: currentUser.email,
+        photoURL: currentUser.photoURL || '',
+      });
+
+      if (syncResult.success) {
+        setMongoUser(syncResult.data);
+        return syncResult.data;
+      }
+    } catch (err) {
+      console.error('[AuthContext Refresh Error]:', err.message);
+    }
+    return mongoUser;
+  };
+
   const handleLogout = async () => {
     setLoading(true);
     try {
@@ -144,8 +167,10 @@ export const AuthProvider = ({ children }) => {
     clearError,
     register: handleRegister,
     login: handleLogin,
+    loginWithEmail: handleLogin,
     googleSignIn: handleGoogleSignIn,
     logout: handleLogout,
+    refreshMongoUser,
     isAuthenticated: !!user,
   };
 

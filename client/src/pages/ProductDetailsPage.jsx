@@ -201,6 +201,25 @@ const ProductDetailsPage = () => {
                 </span>
               )}
             </div>
+
+            {/* Ask GreenGuide AI about this product */}
+            <div className="pt-2 border-t border-[#2E7D32]/10 flex items-center justify-between">
+              <span className="text-[11px] text-[#1B4332] font-semibold flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-[#2E7D32]" /> Want sustainable advice?
+              </span>
+              <button
+                onClick={() =>
+                  navigate('/green-guide', {
+                    state: {
+                      initialMessage: `Tell me more about ${product.name} and who it is suitable for.`,
+                    },
+                  })
+                }
+                className="text-xs font-bold text-[#2E7D32] bg-white hover:bg-[#2E7D32] hover:text-white px-3 py-1 rounded-full border border-[#2E7D32]/20 transition-all"
+              >
+                Ask GreenGuide about this product 🌱
+              </button>
+            </div>
           </div>
 
           {/* Description */}

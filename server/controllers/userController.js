@@ -7,7 +7,7 @@ import User from '../models/User.js';
  */
 export const syncUser = async (req, res, next) => {
   try {
-    const { firebaseUid, name, email, photoURL } = req.body;
+    const { firebaseUid, name, email, photoURL, role } = req.body;
 
     if (!firebaseUid || !email) {
       return res.status(400).json({
@@ -16,11 +16,22 @@ export const syncUser = async (req, res, next) => {
       });
     }
 
+    // Validate requested role if provided
+    if (role && !['user', 'admin'].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid role specified. Role must be "user" or "admin".',
+      });
+    }
+
     let user = await User.findOne({ firebaseUid });
 
     if (user) {
       user.name = name || user.name;
       user.photoURL = photoURL || user.photoURL;
+      if (role) {
+        user.role = role;
+      }
       await user.save();
     } else {
       user = await User.create({
@@ -28,7 +39,7 @@ export const syncUser = async (req, res, next) => {
         name: name || email.split('@')[0],
         email,
         photoURL: photoURL || '',
-        role: 'user',
+        role: role || 'user',
       });
     }
 

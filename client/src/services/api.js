@@ -183,8 +183,11 @@ export const getAdminBuyersApi = async () => {
   return response.data;
 };
 
-export const makeAdminApi = async () => {
-  const response = await api.post('/admin/make-admin');
+
+
+/** GreenGuide AI API */
+export const askGreenGuideApi = async (message) => {
+  const response = await api.post('/ai/green-guide', { message });
   return response.data;
 };
 

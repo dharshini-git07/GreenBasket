@@ -10,7 +10,6 @@ import {
   getAdminUsers,
   getAdminSellers,
   getAdminBuyers,
-  makeUserAdmin,
 } from '../controllers/adminController.js';
 import { protect, requireAdmin } from '../middleware/authMiddleware.js';
 
@@ -18,8 +17,7 @@ const router = express.Router();
 
 router.use(protect); // Require valid Firebase Auth for all admin endpoints
 
-// Dev helper to grant admin access to current logged-in user
-router.post('/make-admin', makeUserAdmin);
+
 
 // Strictly Protected Admin Endpoints
 router.get('/stats', requireAdmin, getAdminStats);

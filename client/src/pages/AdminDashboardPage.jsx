@@ -11,7 +11,7 @@ import {
   Tag,
   UserCheck
 } from 'lucide-react';
-import { getAdminStatsApi, makeAdminApi } from '../services/api';
+import { getAdminStatsApi } from '../services/api';
 import useAuth from '../hooks/useAuth';
 import { LoadingPage } from '../components/common/LoadingSpinner';
 import ErrorMessage from '../components/common/ErrorMessage';
@@ -21,8 +21,6 @@ const AdminDashboardPage = () => {
   const [stats, setStats] = useState({ totalProducts: 0, totalOrders: 0, totalUsers: 0, totalRevenue: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [grantingAdmin, setGrantingAdmin] = useState(false);
-  const [adminSuccess, setAdminSuccess] = useState(null);
   const navigate = useNavigate();
 
   const fetchStats = async () => {
@@ -41,27 +39,8 @@ const AdminDashboardPage = () => {
   };
 
   useEffect(() => {
-    if (mongoUser?.role === 'admin') {
-      fetchStats();
-    } else {
-      setLoading(false);
-    }
-  }, [mongoUser]);
-
-  const handleGrantAdmin = async () => {
-    setGrantingAdmin(true);
-    try {
-      const data = await makeAdminApi();
-      if (data.success) {
-        setAdminSuccess('Admin role granted! Reloading stats...');
-        window.location.reload();
-      }
-    } catch (err) {
-      setError('Could not grant admin access.');
-    } finally {
-      setGrantingAdmin(false);
-    }
-  };
+    fetchStats();
+  }, []);
 
   if (loading) return <LoadingPage message="Loading admin stats..." />;
 
@@ -115,31 +94,7 @@ const AdminDashboardPage = () => {
       </div>
 
       <ErrorMessage message={error} />
-      {adminSuccess && (
-        <div className="p-4 bg-emerald-50 text-emerald-800 rounded-2xl text-xs font-semibold">
-          {adminSuccess}
-        </div>
-      )}
 
-      {/* Dev Helper Card if not yet Admin */}
-      {!isUserAdmin && (
-        <div className="p-6 rounded-3xl bg-[#E8F5E9] border border-[#2E7D32]/30 space-y-3">
-          <div className="flex items-center gap-2 text-[#1B4332]">
-            <Sparkles className="w-5 h-5 text-[#2E7D32]" />
-            <h3 className="font-bold text-sm">Developer Admin Role Assignment</h3>
-          </div>
-          <p className="text-xs text-[#6B7280] leading-relaxed">
-            Your current MongoDB profile role is <strong className="uppercase font-mono text-[#1F2937]">{mongoUser?.role || 'user'}</strong>. Click below to grant admin privileges to your account for Module 3 testing.
-          </p>
-          <button
-            onClick={handleGrantAdmin}
-            disabled={grantingAdmin}
-            className="px-6 py-2.5 bg-[#2E7D32] hover:bg-[#1B4332] text-white text-xs font-semibold rounded-full shadow-sm"
-          >
-            {grantingAdmin ? 'Granting Role...' : 'Grant Dev Admin Access 🌱'}
-          </button>
-        </div>
-      )}
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

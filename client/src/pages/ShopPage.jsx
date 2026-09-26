@@ -32,6 +32,23 @@ const ShopPage = () => {
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'recommended');
   const [currentPage, setCurrentPage] = useState(Number(searchParams.get('page')) || 1);
 
+  // Synchronize state whenever URL searchParams change (from Navbar search, links, etc.)
+  useEffect(() => {
+    const s = searchParams.get('search') || '';
+    const c = searchParams.get('category') || 'All';
+    const min = searchParams.get('minPrice') || '';
+    const max = searchParams.get('maxPrice') || '';
+    const sort = searchParams.get('sort') || 'recommended';
+    const page = Number(searchParams.get('page')) || 1;
+
+    setSearchQuery(s);
+    setSelectedCategory(c);
+    setMinPrice(min);
+    setMaxPrice(max);
+    setSortBy(sort);
+    setCurrentPage(page);
+  }, [searchParams]);
+
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -63,23 +80,35 @@ const ShopPage = () => {
     fetchProducts();
   }, [fetchProducts]);
 
-  // Synchronize URL with active state
-  useEffect(() => {
-    const params = {};
-    if (searchQuery) params.search = searchQuery;
-    if (selectedCategory !== 'All') params.category = selectedCategory;
-    if (minPrice) params.minPrice = minPrice;
-    if (maxPrice) params.maxPrice = maxPrice;
-    if (sortBy !== 'recommended') params.sort = sortBy;
-    if (currentPage > 1) params.page = currentPage;
+  const updateFilter = (updates) => {
+    const newSearch = updates.searchQuery !== undefined ? updates.searchQuery : searchQuery;
+    const newCategory = updates.selectedCategory !== undefined ? updates.selectedCategory : selectedCategory;
+    const newMin = updates.minPrice !== undefined ? updates.minPrice : minPrice;
+    const newMax = updates.maxPrice !== undefined ? updates.maxPrice : maxPrice;
+    const newSort = updates.sortBy !== undefined ? updates.sortBy : sortBy;
+    const newPage = updates.currentPage !== undefined ? updates.currentPage : 1;
 
-    setSearchParams(params);
-  }, [searchQuery, selectedCategory, minPrice, maxPrice, sortBy, currentPage, setSearchParams]);
+    setSearchQuery(newSearch);
+    setSelectedCategory(newCategory);
+    setMinPrice(newMin);
+    setMaxPrice(newMax);
+    setSortBy(newSort);
+    setCurrentPage(newPage);
+
+    const params = {};
+    if (newSearch.trim()) params.search = newSearch.trim();
+    if (newCategory !== 'All') params.category = newCategory;
+    if (newMin) params.minPrice = newMin;
+    if (newMax) params.maxPrice = newMax;
+    if (newSort !== 'recommended') params.sort = newSort;
+    if (newPage > 1) params.page = newPage;
+
+    setSearchParams(params, { replace: true });
+  };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    setCurrentPage(1);
-    fetchProducts();
+    updateFilter({ currentPage: 1 });
   };
 
   const clearFilters = () => {
@@ -89,6 +118,7 @@ const ShopPage = () => {
     setMaxPrice('');
     setSortBy('recommended');
     setCurrentPage(1);
+    setSearchParams({}, { replace: true });
   };
 
   return (
@@ -118,17 +148,14 @@ const ShopPage = () => {
               type="text"
               placeholder="Search sustainable products..."
               value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setCurrentPage(1);
-              }}
+              onChange={(e) => updateFilter({ searchQuery: e.target.value, currentPage: 1 })}
               className="w-full pl-10 pr-10 py-2.5 bg-[#F8FAF8] border border-gray-200 rounded-full text-xs text-[#1F2937] focus:outline-none focus:border-[#2E7D32]"
             />
             <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             {searchQuery && (
               <button
                 type="button"
-                onClick={() => setSearchQuery('')}
+                onClick={() => updateFilter({ searchQuery: '', currentPage: 1 })}
                 className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
                 <X className="w-4 h-4" />
@@ -142,10 +169,7 @@ const ShopPage = () => {
               type="number"
               placeholder="Min ₹"
               value={minPrice}
-              onChange={(e) => {
-                setMinPrice(e.target.value);
-                setCurrentPage(1);
-              }}
+              onChange={(e) => updateFilter({ minPrice: e.target.value, currentPage: 1 })}
               className="w-full px-3 py-2.5 bg-[#F8FAF8] border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#2E7D32]"
             />
             <span className="text-xs text-gray-400">–</span>
@@ -153,10 +177,7 @@ const ShopPage = () => {
               type="number"
               placeholder="Max ₹"
               value={maxPrice}
-              onChange={(e) => {
-                setMaxPrice(e.target.value);
-                setCurrentPage(1);
-              }}
+              onChange={(e) => updateFilter({ maxPrice: e.target.value, currentPage: 1 })}
               className="w-full px-3 py-2.5 bg-[#F8FAF8] border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#2E7D32]"
             />
           </div>
@@ -166,10 +187,7 @@ const ShopPage = () => {
             <SlidersHorizontal className="w-4 h-4 text-gray-500 shrink-0" />
             <select
               value={sortBy}
-              onChange={(e) => {
-                setSortBy(e.target.value);
-                setCurrentPage(1);
-              }}
+              onChange={(e) => updateFilter({ sortBy: e.target.value, currentPage: 1 })}
               className="w-full px-4 py-2.5 bg-[#F8FAF8] border border-gray-200 rounded-full text-xs text-[#1F2937] font-medium focus:outline-none focus:border-[#2E7D32]"
             >
               <option value="recommended">Sort: Recommended</option>
@@ -188,10 +206,7 @@ const ShopPage = () => {
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
-              onClick={() => {
-                setSelectedCategory(cat);
-                setCurrentPage(1);
-              }}
+              onClick={() => updateFilter({ selectedCategory: cat, currentPage: 1 })}
               className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
                 selectedCategory === cat
                   ? 'bg-[#2E7D32] text-white shadow-xs'
@@ -232,7 +247,7 @@ const ShopPage = () => {
         <ProductSkeleton count={8} />
       ) : products.length > 0 ? (
         <div className="space-y-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {products.map((product) => (
               <ProductCard key={product._id} product={product} />
             ))}

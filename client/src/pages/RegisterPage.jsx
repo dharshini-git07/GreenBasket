@@ -10,6 +10,7 @@ const RegisterPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState('user');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -37,8 +38,13 @@ const RegisterPage = () => {
     try {
       setError('');
       setIsSubmitting(true);
-      await register(name, email, password);
-      navigate('/profile');
+      const res = await register(name, email, password, role);
+      
+      if (res?.mongoUser?.role === 'admin' || role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       setError(err.message || 'Failed to create an account.');
     } finally {
@@ -181,6 +187,50 @@ const RegisterPage = () => {
                 className="w-full pl-10 pr-4 py-2.5 bg-[#F8FAF8] border border-gray-200 rounded-xl text-xs text-[#1F2937] focus:outline-none focus:border-[#2E7D32] focus:ring-2 focus:ring-[#2E7D32]/20"
               />
               <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            </div>
+          </div>
+
+          {/* Account Type Role Selection */}
+          <div>
+            <label className="block text-xs font-semibold text-[#1F2937] mb-1.5">
+              Account Type *
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <label
+                className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
+                  role === 'user'
+                    ? 'bg-[#E8F5E9] border-[#2E7D32] text-[#2E7D32] shadow-xs'
+                    : 'bg-[#F8FAF8] border-gray-200 text-gray-500 hover:bg-gray-50'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="role"
+                  value="user"
+                  checked={role === 'user'}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="sr-only"
+                />
+                <span>🌱 User</span>
+              </label>
+
+              <label
+                className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
+                  role === 'admin'
+                    ? 'bg-[#E8F5E9] border-[#2E7D32] text-[#2E7D32] shadow-xs'
+                    : 'bg-[#F8FAF8] border-gray-200 text-gray-500 hover:bg-gray-50'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="role"
+                  value="admin"
+                  checked={role === 'admin'}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="sr-only"
+                />
+                <span>🛡️ Admin</span>
+              </label>
             </div>
           </div>
 

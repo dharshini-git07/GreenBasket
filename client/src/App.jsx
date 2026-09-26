@@ -18,12 +18,15 @@ import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import SellProductPage from './pages/SellProductPage';
 import MyProductsPage from './pages/MyProductsPage';
+import GreenGuidePage from './pages/GreenGuidePage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminProductsPage from './pages/AdminProductsPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminUsersPage from './pages/AdminUsersPage';
 import AdminSellersPage from './pages/AdminSellersPage';
 import AdminBuyersPage from './pages/AdminBuyersPage';
+import AdminLoginPage from './pages/AdminLoginPage';
+import AdminLayout from './layouts/AdminLayout';
 import NotFoundPage from './pages/NotFoundPage';
 import ProtectedRoute from './routes/ProtectedRoute';
 import AdminRoute from './routes/AdminRoute';
@@ -35,10 +38,32 @@ function App() {
         <WishlistProvider>
           <Router>
             <Routes>
+              {/* Standalone Separate Admin Login Page */}
+              <Route path="/admin/login" element={<AdminLoginPage />} />
+
+              {/* Protected Admin Section with Dedicated Admin Layout */}
+              <Route
+                path="/admin"
+                element={
+                  <AdminRoute>
+                    <AdminLayout />
+                  </AdminRoute>
+                }
+              >
+                <Route index element={<AdminDashboardPage />} />
+                <Route path="products" element={<AdminProductsPage />} />
+                <Route path="orders" element={<AdminOrdersPage />} />
+                <Route path="users" element={<AdminUsersPage />} />
+                <Route path="sellers" element={<AdminSellersPage />} />
+                <Route path="buyers" element={<AdminBuyersPage />} />
+              </Route>
+
+              {/* Main Customer Storefront Routes */}
               <Route path="/" element={<RootLayout />}>
                 <Route index element={<HomePage />} />
                 <Route path="shop" element={<ShopPage />} />
                 <Route path="product/:id" element={<ProductDetailsPage />} />
+                <Route path="green-guide" element={<GreenGuidePage />} />
                 <Route path="login" element={<LoginPage />} />
                 <Route path="register" element={<RegisterPage />} />
                 
@@ -121,56 +146,6 @@ function App() {
                     <ProtectedRoute>
                       <OrderDetailsPage />
                     </ProtectedRoute>
-                  }
-                />
-
-                {/* Protected Admin Routes */}
-                <Route
-                  path="admin"
-                  element={
-                    <AdminRoute>
-                      <AdminDashboardPage />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="admin/products"
-                  element={
-                    <AdminRoute>
-                      <AdminProductsPage />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="admin/orders"
-                  element={
-                    <AdminRoute>
-                      <AdminOrdersPage />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="admin/users"
-                  element={
-                    <AdminRoute>
-                      <AdminUsersPage />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="admin/sellers"
-                  element={
-                    <AdminRoute>
-                      <AdminSellersPage />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="admin/buyers"
-                  element={
-                    <AdminRoute>
-                      <AdminBuyersPage />
-                    </AdminRoute>
                   }
                 />
 

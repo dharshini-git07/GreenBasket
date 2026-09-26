@@ -196,7 +196,7 @@ const HomePage = () => {
         {loading ? (
           <ProductSkeleton count={4} />
         ) : featuredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {featuredProducts.slice(0, 4).map((product) => (
               <ProductCard key={product._id} product={product} />
             ))}
@@ -213,23 +213,27 @@ const HomePage = () => {
 
       {/* GREENGUIDE AI PREVIEW BANNER */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-gradient-to-r from-[#1B4332] via-[#2E7D32] to-[#1B4332] p-8 sm:p-12 text-white relative overflow-hidden shadow-xl">
-          <div className="max-w-2xl relative z-10 space-y-4">
+        <div className="rounded-3xl bg-gradient-to-r from-[#1B4332] via-[#2E7D32] to-[#1B4332] p-8 sm:p-12 text-white relative overflow-hidden shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="max-w-2xl relative z-10 space-y-4 text-center md:text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold text-[#8BC34A]">
-              <Bot className="w-4 h-4" />
+              <Sparkles className="w-4 h-4" />
               <span>Meet GreenGuide AI 🌱</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl font-bold leading-tight">
-              Your personal sustainable shopping assistant.
+            <h2 className="text-2xl sm:text-4xl font-black leading-tight">
+              Not sure what to choose?
             </h2>
             <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
-              Ask natural queries like <span className="font-semibold italic text-white font-mono bg-black/20 px-2 py-0.5 rounded">"I need reusable kitchen products under ₹1500"</span> and get intelligent, grounded recommendations directly from our eco-catalog.
+              Tell us what you're looking for and GreenGuide will help you discover sustainable products from our catalog.
             </p>
-            <div className="pt-2">
-              <span className="inline-flex items-center gap-2 text-xs font-semibold text-white bg-white/10 hover:bg-white/20 border border-white/20 px-5 py-2.5 rounded-full transition-all cursor-default">
-                AI Engine Activating in Module 4
-              </span>
-            </div>
+          </div>
+
+          <div className="relative z-10 shrink-0">
+            <Link
+              to="/green-guide"
+              className="px-8 py-4 bg-[#8BC34A] hover:bg-white text-[#1B4332] font-black text-sm rounded-full shadow-lg transition-all duration-200 flex items-center justify-center gap-2 group"
+            >
+              Explore GreenGuide →
+            </Link>
           </div>
         </div>
       </section>

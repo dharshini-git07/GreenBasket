@@ -31,9 +31,11 @@ const Navbar = () => {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/shop?search=${encodeURIComponent(searchQuery)}`);
-      setMobileMenuOpen(false);
+      navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      navigate('/shop');
     }
+    setMobileMenuOpen(false);
   };
 
   const handleLogout = async () => {
@@ -116,6 +118,9 @@ const Navbar = () => {
             </Link>
             <Link to="/shop" className="hover:text-[#2E7D32] transition-colors">
               Shop
+            </Link>
+            <Link to="/green-guide" className="hover:text-[#2E7D32] transition-colors flex items-center gap-1 font-semibold text-[#2E7D32] bg-[#E8F5E9]/70 px-2.5 py-1 rounded-full text-xs">
+              <Sparkles className="w-3.5 h-3.5 text-[#2E7D32]" /> GreenGuide AI 🌱
             </Link>
             {isAuthenticated && (
               <>
@@ -319,6 +324,13 @@ const Navbar = () => {
                 className="px-3 py-2 rounded-lg hover:bg-[#E8F5E9] hover:text-[#2E7D32]"
               >
                 Shop
+              </Link>
+              <Link
+                to="/green-guide"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-lg bg-[#E8F5E9] text-[#2E7D32] font-bold flex items-center gap-1.5 text-xs"
+              >
+                <Sparkles className="w-4 h-4 text-[#2E7D32]" /> GreenGuide AI 🌱
               </Link>
               {isAuthenticated && (
                 <>

@@ -41,19 +41,19 @@ const Footer = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-12">
           
           {/* Brand Info */}
-          <div className="space-y-4 md:col-span-1">
+          <div className="space-y-3 col-span-2 md:col-span-1">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-lg bg-[#E8F5E9] text-[#2E7D32] flex items-center justify-center">
-                <Leaf className="w-5 h-5" />
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#E8F5E9] text-[#2E7D32] flex items-center justify-center">
+                <Leaf className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-white">
+              <span className="text-lg sm:text-xl font-bold tracking-tight text-white">
                 GreenBasket 🌱
               </span>
             </div>
-            <p className="text-sm font-medium text-[#8BC34A]">
+            <p className="text-xs sm:text-sm font-medium text-[#8BC34A]">
               Shop Better. Live Greener.
             </p>
             <p className="text-xs text-gray-300 leading-relaxed">
@@ -62,11 +62,11 @@ const Footer = () => {
           </div>
 
           {/* Useful Quick Links */}
-          <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#8BC34A] mb-4">
+          <div className="col-span-1">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#8BC34A] mb-3 sm:mb-4">
               Explore
             </h3>
-            <ul className="space-y-2.5 text-xs text-gray-300">
+            <ul className="space-y-2 text-xs text-gray-300">
               <li>
                 <Link to="/" className="hover:text-white transition-colors">Home</Link>
               </li>
@@ -83,11 +83,11 @@ const Footer = () => {
           </div>
 
           {/* Customer & Policy Links */}
-          <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#8BC34A] mb-4">
+          <div className="col-span-1">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#8BC34A] mb-3 sm:mb-4">
               Customer Care
             </h3>
-            <ul className="space-y-2.5 text-xs text-gray-300">
+            <ul className="space-y-2 text-xs text-gray-300">
               <li>
                 <Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link>
               </li>
@@ -104,15 +104,15 @@ const Footer = () => {
           </div>
 
           {/* Sustainability Message */}
-          <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#8BC34A] mb-4">
+          <div className="space-y-3 col-span-2 md:col-span-1">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#8BC34A] mb-2 sm:mb-4">
               Our Mission
             </h3>
-            <div className="p-4 rounded-xl bg-[#2E7D32]/30 border border-[#2E7D32]">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-[#2E7D32]/30 border border-[#2E7D32]">
               <p className="text-xs italic text-gray-200 font-medium">
                 "Small choices. Meaningful impact."
               </p>
-              <p className="text-[11px] text-gray-300 mt-2">
+              <p className="text-[11px] text-gray-300 mt-1.5">
                 Every conscious purchase protects ecosystems and supports ethical artisans globally.
               </p>
             </div>

@@ -10,6 +10,7 @@ import cartRoutes from './routes/cartRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import wishlistRoutes from './routes/wishlistRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
 import { seedProductsDB } from './utils/seedData.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
@@ -38,6 +39,7 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Centralized Error Handling
 app.use(notFound);

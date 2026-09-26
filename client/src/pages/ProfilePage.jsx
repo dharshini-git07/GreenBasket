@@ -459,6 +459,38 @@ const ProfilePage = () => {
                   {mongoUser?.role || 'user'}
                 </span>
               </div>
+
+              {isAdmin && (
+                <div className="pt-3 border-t border-gray-100 space-y-2">
+                  <p className="text-[11px] font-bold text-[#1F2937]">Admin Quick Management</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link
+                      to="/admin"
+                      className="p-2 bg-[#E8F5E9] text-[#2E7D32] rounded-xl font-bold text-[11px] text-center hover:bg-[#2E7D32] hover:text-white transition-colors"
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      to="/admin"
+                      className="p-2 bg-gray-50 text-gray-700 rounded-xl font-semibold text-[11px] text-center hover:bg-gray-100 transition-colors"
+                    >
+                      Manage Users
+                    </Link>
+                    <Link
+                      to="/admin"
+                      className="p-2 bg-gray-50 text-gray-700 rounded-xl font-semibold text-[11px] text-center hover:bg-gray-100 transition-colors"
+                    >
+                      Manage Products
+                    </Link>
+                    <Link
+                      to="/admin"
+                      className="p-2 bg-gray-50 text-gray-700 rounded-xl font-semibold text-[11px] text-center hover:bg-gray-100 transition-colors"
+                    >
+                      Manage Orders
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

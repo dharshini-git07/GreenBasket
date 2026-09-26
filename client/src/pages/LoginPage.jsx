@@ -11,11 +11,11 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { login, googleSignIn } = useAuth();
+  const { login, googleSignIn, refreshMongoUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = location.state?.from?.pathname || '/profile';
+  const from = location.state?.from?.pathname || '/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,7 +28,13 @@ const LoginPage = () => {
       setError('');
       setIsSubmitting(true);
       await login(email, password);
-      navigate(from, { replace: true });
+      const updatedUser = await refreshMongoUser();
+
+      if (updatedUser?.role === 'admin') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     } catch (err) {
       setError(err.message || 'Failed to sign in. Please check your credentials.');
     } finally {
@@ -41,7 +47,13 @@ const LoginPage = () => {
       setError('');
       setIsSubmitting(true);
       await googleSignIn();
-      navigate(from, { replace: true });
+      const updatedUser = await refreshMongoUser();
+
+      if (updatedUser?.role === 'admin') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     } catch (err) {
       setError(err.message || 'Google sign in failed.');
     } finally {
