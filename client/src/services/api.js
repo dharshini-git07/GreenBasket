@@ -1,8 +1,34 @@
 import axios from 'axios';
 import { auth } from './firebase';
 
+const getApiBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL;
+
+  // In production builds, ignore localhost/127.0.0.1 and format target API URL
+  if (import.meta.env.PROD) {
+    if (envUrl && !envUrl.includes('localhost') && !envUrl.includes('127.0.0.1')) {
+      let cleanUrl = envUrl.trim().replace(/\/+$/, '');
+      if (!cleanUrl.endsWith('/api')) {
+        cleanUrl += '/api';
+      }
+      return cleanUrl;
+    }
+    return '/api';
+  }
+
+  // Development environment
+  if (envUrl && envUrl.trim() !== '') {
+    let cleanUrl = envUrl.trim().replace(/\/+$/, '');
+    if (!cleanUrl.endsWith('/api')) {
+      cleanUrl += '/api';
+    }
+    return cleanUrl;
+  }
+  return 'http://localhost:5000/api';
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
+  baseURL: getApiBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
