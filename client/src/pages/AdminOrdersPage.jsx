@@ -88,15 +88,15 @@ const AdminOrdersPage = () => {
               <tr>
                 <th className="px-6 py-3">Order ID</th>
                 <th className="px-6 py-3">Customer</th>
-                <th className="px-6 py-3">Items</th>
-                <th className="px-6 py-3">Total</th>
-                <th className="px-6 py-3">Payment</th>
+                <th className="px-6 py-3">Date</th>
+                <th className="px-6 py-3">Amount</th>
+                <th className="px-6 py-3">Payment Method</th>
+                <th className="px-6 py-3">Payment Status</th>
                 <th className="px-6 py-3">Order Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {orders.map((o) => {
-                const itemCount = o.items?.reduce((t, i) => t + i.quantity, 0) || 0;
                 return (
                   <tr key={o._id} className="hover:bg-[#F8FAF8]/50 transition-colors">
                     <td className="px-6 py-4 font-mono font-bold text-[#1F2937]">
@@ -106,11 +106,28 @@ const AdminOrdersPage = () => {
                       <p className="font-bold text-[#1F2937]">{o.shippingAddress?.fullName || o.user?.name || 'Customer'}</p>
                       <p className="text-[10px] text-gray-400">{o.user?.email || o.shippingAddress?.phone}</p>
                     </td>
-                    <td className="px-6 py-4 font-semibold">{itemCount} items</td>
+                    <td className="px-6 py-4 text-gray-500 text-[11px]">
+                      {new Date(o.createdAt).toLocaleDateString()}
+                    </td>
                     <td className="px-6 py-4 font-bold text-[#1B4332]">₹{o.total?.toLocaleString()}</td>
                     <td className="px-6 py-4">
-                      <span className="bg-[#E8F5E9] text-[#2E7D32] px-2.5 py-0.5 rounded-full font-semibold text-[10px]">
-                        {o.paymentMethod} ({o.paymentStatus})
+                      <p className="font-semibold text-[#1F2937]">
+                        {o.paymentMethod === 'RAZORPAY' ? 'Razorpay' : 'Cash on Delivery'}
+                      </p>
+                      {o.paymentMethod === 'RAZORPAY' && (o.razorpayOrderId || o.razorpayPaymentId) && (
+                        <div className="mt-1 space-y-0.5 text-[10px] text-gray-500 font-mono bg-gray-50 p-1.5 rounded-lg border border-gray-100">
+                          {o.razorpayOrderId && <p><span className="text-gray-400 font-sans">RP Order:</span> {o.razorpayOrderId}</p>}
+                          {o.razorpayPaymentId && <p><span className="text-gray-400 font-sans">RP Pay:</span> {o.razorpayPaymentId}</p>}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`px-2.5 py-0.5 rounded-full font-bold text-[10px] ${
+                        o.paymentStatus === 'Paid'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : 'bg-amber-50 text-amber-600 border border-amber-200'
+                      }`}>
+                        {o.paymentStatus}
                       </span>
                     </td>
                     <td className="px-6 py-4">

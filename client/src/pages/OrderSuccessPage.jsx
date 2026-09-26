@@ -62,11 +62,23 @@ const OrderSuccessPage = () => {
           </div>
           <div className="flex justify-between py-1 border-b border-gray-50">
             <span className="text-[#6B7280]">Payment Method</span>
-            <span className="font-semibold text-[#2E7D32]">Cash on Delivery (COD)</span>
+            <span className="font-semibold text-[#2E7D32]">
+              {order.paymentMethod === 'RAZORPAY' ? 'Razorpay' : 'Cash on Delivery'}
+            </span>
+          </div>
+          <div className="flex justify-between py-1 border-b border-gray-50">
+            <span className="text-[#6B7280]">Payment Status</span>
+            <span className={`font-bold px-2 py-0.5 rounded-full text-[10px] ${
+              order.paymentStatus === 'Paid'
+                ? 'bg-emerald-50 text-emerald-700'
+                : 'bg-amber-50 text-amber-600'
+            }`}>
+              {order.paymentStatus}
+            </span>
           </div>
           <div className="flex justify-between py-1">
-            <span className="text-[#6B7280]">Status</span>
-            <span className="font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full text-[10px]">
+            <span className="text-[#6B7280]">Order Status</span>
+            <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full text-[10px]">
               {order.orderStatus}
             </span>
           </div>

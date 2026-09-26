@@ -132,6 +132,17 @@ export const getOrderByIdApi = async (orderId) => {
   return response.data;
 };
 
+/** Payment APIs (Razorpay Test Mode) */
+export const createRazorpayOrderApi = async () => {
+  const response = await api.post('/payment/create-order');
+  return response.data;
+};
+
+export const verifyPaymentApi = async (paymentData) => {
+  const response = await api.post('/payment/verify', paymentData);
+  return response.data;
+};
+
 /** Admin APIs */
 export const getAdminStatsApi = async () => {
   const response = await api.get('/admin/stats');

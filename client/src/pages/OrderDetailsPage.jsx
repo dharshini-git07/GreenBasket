@@ -166,11 +166,19 @@ const OrderDetailsPage = () => {
             </div>
             <div className="flex justify-between py-1 border-b border-gray-50">
               <span className="text-gray-500">Method</span>
-              <span className="font-semibold text-[#1F2937]">{order.paymentMethod}</span>
+              <span className="font-semibold text-[#1F2937]">
+                {order.paymentMethod === 'RAZORPAY' ? 'Razorpay' : 'Cash on Delivery'}
+              </span>
             </div>
             <div className="flex justify-between py-1 border-b border-gray-50">
               <span className="text-gray-500">Payment Status</span>
-              <span className="font-semibold text-emerald-700">{order.paymentStatus}</span>
+              <span className={`font-bold px-2 py-0.5 rounded-full text-[10px] ${
+                order.paymentStatus === 'Paid'
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                  : 'bg-amber-50 text-amber-600 border border-amber-200'
+              }`}>
+                {order.paymentStatus}
+              </span>
             </div>
             <div className="flex justify-between py-1 text-gray-500">
               <span>Items Subtotal</span>
