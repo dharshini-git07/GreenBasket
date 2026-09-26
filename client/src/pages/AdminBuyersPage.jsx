@@ -77,14 +77,14 @@ const AdminBuyersPage = () => {
       {/* Buyers Table */}
       <div className="bg-white rounded-3xl border border-gray-100 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-[#1F2937]">
+          <table className="w-full text-left text-xs sm:text-sm text-[#1F2937]">
             <thead className="bg-[#F8FAF8] text-[#6B7280] uppercase tracking-wider font-semibold border-b border-gray-100">
               <tr>
-                <th className="px-6 py-3">Buyer Name</th>
-                <th className="px-6 py-3">Email Address</th>
-                <th className="px-6 py-3">Orders Count</th>
-                <th className="px-6 py-3">Total Spent</th>
-                <th className="px-6 py-3">Joined Date</th>
+                <th className="px-6 py-3.5">Buyer Name</th>
+                <th className="px-6 py-3.5">Email Address</th>
+                <th className="px-6 py-3.5">Orders Count</th>
+                <th className="px-6 py-3.5">Total Spent</th>
+                <th className="px-6 py-3.5">Joined Date</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">

@@ -119,7 +119,7 @@ const ContactPage = () => {
                     href="mailto:support@greenbasket.com" 
                     className="text-[#2E7D32] font-semibold hover:underline mt-0.5 block"
                   >
-                    support@greenbasket.com
+                    dharshuu2507@gmail.com
                   </a>
                   <p className="text-[11px] text-gray-400">Response within 24 hours</p>
                 </div>
@@ -136,7 +136,7 @@ const ContactPage = () => {
                     href="tel:+919876543210" 
                     className="text-[#2E7D32] font-semibold hover:underline mt-0.5 block"
                   >
-                    +91 98765 43210
+                    +91 9994411370
                   </a>
                   <p className="text-[11px] text-gray-400">Toll-free demo hotline</p>
                 </div>

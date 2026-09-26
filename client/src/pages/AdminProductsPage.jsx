@@ -207,16 +207,16 @@ const AdminProductsPage = () => {
       {/* Products Table */}
       <div className="bg-white rounded-3xl border border-gray-100 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-[#1F2937]">
+          <table className="w-full text-left text-xs sm:text-sm text-[#1F2937]">
             <thead className="bg-[#F8FAF8] text-[#6B7280] uppercase tracking-wider font-semibold border-b border-gray-100">
               <tr>
-                <th className="px-6 py-3">Product</th>
-                <th className="px-6 py-3">Owner</th>
-                <th className="px-6 py-3">Category</th>
-                <th className="px-6 py-3">Price</th>
-                <th className="px-6 py-3">Stock</th>
-                <th className="px-6 py-3">Eco Score</th>
-                <th className="px-6 py-3 text-right">Actions</th>
+                <th className="px-6 py-3.5">Product</th>
+                <th className="px-6 py-3.5">Owner</th>
+                <th className="px-6 py-3.5">Category</th>
+                <th className="px-6 py-3.5">Price</th>
+                <th className="px-6 py-3.5">Stock</th>
+                <th className="px-6 py-3.5">Eco Score</th>
+                <th className="px-6 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -230,14 +230,14 @@ const AdminProductsPage = () => {
                     />
                     <div>
                       <p className="font-bold text-[#1F2937] line-clamp-1">{p.name}</p>
-                      <p className="text-[10px] text-gray-400 font-mono">No. {p.productNumber || '-'}</p>
+                      <p className="text-xs text-gray-500 font-mono">No. {p.productNumber || '-'}</p>
                     </div>
                   </td>
                   <td className="px-6 py-4 font-semibold text-gray-700">
                     {p.owner?.name || p.owner?.email || 'Admin Catalog'}
                   </td>
                   <td className="px-6 py-4">
-                    <span className="bg-[#E8F5E9] text-[#2E7D32] px-2.5 py-0.5 rounded-full font-semibold text-[11px]">
+                    <span className="bg-[#E8F5E9] text-[#2E7D32] px-2.5 py-1 rounded-full font-semibold text-xs">
                       {p.category}
                     </span>
                   </td>

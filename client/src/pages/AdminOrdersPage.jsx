@@ -83,16 +83,16 @@ const AdminOrdersPage = () => {
       {/* Orders Table */}
       <div className="bg-white rounded-3xl border border-gray-100 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-[#1F2937]">
+          <table className="w-full text-left text-xs sm:text-sm text-[#1F2937]">
             <thead className="bg-[#F8FAF8] text-[#6B7280] uppercase tracking-wider font-semibold border-b border-gray-100">
               <tr>
-                <th className="px-6 py-3">Order ID</th>
-                <th className="px-6 py-3">Customer</th>
-                <th className="px-6 py-3">Date</th>
-                <th className="px-6 py-3">Amount</th>
-                <th className="px-6 py-3">Payment Method</th>
-                <th className="px-6 py-3">Payment Status</th>
-                <th className="px-6 py-3">Order Status</th>
+                <th className="px-6 py-3.5">Order ID</th>
+                <th className="px-6 py-3.5">Customer</th>
+                <th className="px-6 py-3.5">Date</th>
+                <th className="px-6 py-3.5">Amount</th>
+                <th className="px-6 py-3.5">Payment Method</th>
+                <th className="px-6 py-3.5">Payment Status</th>
+                <th className="px-6 py-3.5">Order Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -104,9 +104,9 @@ const AdminOrdersPage = () => {
                     </td>
                     <td className="px-6 py-4">
                       <p className="font-bold text-[#1F2937]">{o.shippingAddress?.fullName || o.user?.name || 'Customer'}</p>
-                      <p className="text-[10px] text-gray-400">{o.user?.email || o.shippingAddress?.phone}</p>
+                      <p className="text-xs text-gray-500">{o.user?.email || o.shippingAddress?.phone}</p>
                     </td>
-                    <td className="px-6 py-4 text-gray-500 text-[11px]">
+                    <td className="px-6 py-4 text-gray-500 text-xs">
                       {new Date(o.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 font-bold text-[#1B4332]">₹{o.total?.toLocaleString()}</td>
@@ -115,7 +115,7 @@ const AdminOrdersPage = () => {
                         {o.paymentMethod === 'RAZORPAY' ? 'Razorpay' : 'Cash on Delivery'}
                       </p>
                       {o.paymentMethod === 'RAZORPAY' && (o.razorpayOrderId || o.razorpayPaymentId) && (
-                        <div className="mt-1 space-y-0.5 text-[10px] text-gray-500 font-mono bg-gray-50 p-1.5 rounded-lg border border-gray-100">
+                        <div className="mt-1 space-y-0.5 text-xs text-gray-600 font-mono bg-gray-50 p-1.5 rounded-lg border border-gray-100">
                           {o.razorpayOrderId && <p><span className="text-gray-400 font-sans">RP Order:</span> {o.razorpayOrderId}</p>}
                           {o.razorpayPaymentId && <p><span className="text-gray-400 font-sans">RP Pay:</span> {o.razorpayPaymentId}</p>}
                         </div>

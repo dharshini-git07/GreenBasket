@@ -47,13 +47,13 @@ const AdminUsersPage = () => {
       {/* Users Table */}
       <div className="bg-white rounded-3xl border border-gray-100 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-[#1F2937]">
+          <table className="w-full text-left text-xs sm:text-sm text-[#1F2937]">
             <thead className="bg-[#F8FAF8] text-[#6B7280] uppercase tracking-wider font-semibold border-b border-gray-100">
               <tr>
-                <th className="px-6 py-3">User</th>
-                <th className="px-6 py-3">Email</th>
-                <th className="px-6 py-3">Role</th>
-                <th className="px-6 py-3">Registration Date</th>
+                <th className="px-6 py-3.5">User</th>
+                <th className="px-6 py-3.5">Email</th>
+                <th className="px-6 py-3.5">Role</th>
+                <th className="px-6 py-3.5">Registration Date</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -67,7 +67,7 @@ const AdminUsersPage = () => {
                   </td>
                   <td className="px-6 py-4 font-mono text-gray-600">{u.email}</td>
                   <td className="px-6 py-4">
-                    <span className={`px-2.5 py-0.5 rounded-full font-bold uppercase text-[10px] ${
+                    <span className={`px-2.5 py-1 rounded-full font-bold uppercase text-xs ${
                       u.role === 'admin'
                         ? 'bg-purple-100 text-purple-700'
                         : 'bg-[#E8F5E9] text-[#2E7D32]'
