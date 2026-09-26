@@ -9,6 +9,9 @@ try {
 }
 
 export const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) {
+    return;
+  }
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
       dbName: 'greenbasket',

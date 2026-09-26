@@ -22,10 +22,22 @@ const app = express();
 // Initialize Firebase Admin
 initFirebaseAdmin();
 
+// Middleware to ensure DB connection on serverless requests
+app.use(async (req, res, next) => {
+  if (process.env.MONGODB_URI) {
+    try {
+      await connectDB();
+    } catch (dbErr) {
+      console.error('[DB Middleware Error]:', dbErr.message);
+    }
+  }
+  next();
+});
+
 // Middleware
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: process.env.CLIENT_URL || '*',
     credentials: true,
   })
 );
@@ -49,18 +61,22 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB Atlas and launch server
-const startServer = async () => {
-  if (process.env.MONGODB_URI) {
-    await connectDB();
-    await seedProductsDB();
-  } else {
-    console.warn('[Server Warning] MONGODB_URI environment variable not set. Server starting without DB connection.');
-  }
+// Connect to MongoDB Atlas and launch server (only if not on Vercel)
+if (!process.env.VERCEL) {
+  const startServer = async () => {
+    if (process.env.MONGODB_URI) {
+      await connectDB();
+      await seedProductsDB();
+    } else {
+      console.warn('[Server Warning] MONGODB_URI environment variable not set. Server starting without DB connection.');
+    }
 
-  app.listen(PORT, () => {
-    console.log(`[GreenBasket Server] Running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-  });
-};
+    app.listen(PORT, () => {
+      console.log(`[GreenBasket Server] Running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+    });
+  };
 
-startServer();
+  startServer();
+}
+
+export default app;
