@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Leaf, 
-  Search, 
   Heart, 
   ShoppingBag, 
   User as UserIcon, 
@@ -20,23 +19,12 @@ import useWishlist from '../../hooks/useWishlist';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   
   const { user, mongoUser, logout, isAuthenticated } = useAuth();
   const { cartCount, cartMessage, dismissMessage } = useCart();
   const { wishlistCount, wishlistMessage, dismissWishlistMessage } = useWishlist();
   const navigate = useNavigate();
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
-    } else {
-      navigate('/shop');
-    }
-    setMobileMenuOpen(false);
-  };
 
   const handleLogout = async () => {
     try {
@@ -81,8 +69,8 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 lg:grid-cols-[1fr_auto_1fr] items-center h-20 gap-2 sm:gap-4">
           
-          {/* 1. Left Section: Brand Logo + Desktop Search */}
-          <div className="flex items-center gap-3 lg:gap-5 min-w-0">
+          {/* 1. Left Section: Brand Logo */}
+          <div className="flex items-center min-w-0">
             <Link to="/" className="flex items-center gap-2 group shrink-0">
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#E8F5E9] flex items-center justify-center text-[#2E7D32] group-hover:bg-[#2E7D32] group-hover:text-white transition-all duration-300 shadow-xs">
                 <Leaf className="w-5 h-5 sm:w-6 sm:h-6 transition-transform group-hover:rotate-12" />
@@ -97,20 +85,6 @@ const Navbar = () => {
                 </span>
               </div>
             </Link>
-
-            {/* Desktop Search Bar */}
-            <div className="hidden md:flex flex-1 max-w-[170px] lg:max-w-[200px] xl:max-w-[240px]">
-              <form onSubmit={handleSearchSubmit} className="w-full relative">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-8 pr-3 py-2 bg-[#F8FAF8] border border-gray-200 rounded-full text-xs xl:text-sm text-[#1F2937] placeholder-gray-400 focus:outline-none focus:border-[#2E7D32] focus:ring-2 focus:ring-[#2E7D32]/20 transition-all"
-                />
-                <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              </form>
-            </div>
           </div>
 
           {/* 2. Center Section: Main Navigation Links (Mathematically Centered) */}
@@ -302,18 +276,6 @@ const Navbar = () => {
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-gray-100 py-4 space-y-4 animate-in fade-in">
-            {/* Search Bar Mobile */}
-            <form onSubmit={handleSearchSubmit} className="relative px-2">
-              <input
-                type="text"
-                placeholder="Search sustainable products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-[#F8FAF8] border border-gray-200 rounded-full text-sm focus:outline-none focus:border-[#2E7D32]"
-              />
-              <Search className="w-4 h-4 text-gray-400 absolute left-5 top-1/2 -translate-y-1/2" />
-            </form>
-
             <div className="flex flex-col space-y-2 px-2 text-sm font-medium">
               <Link
                 to="/"
