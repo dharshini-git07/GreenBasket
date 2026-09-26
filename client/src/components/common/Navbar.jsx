@@ -79,40 +79,42 @@ const Navbar = () => {
       )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="grid grid-cols-2 lg:grid-cols-[1fr_auto_1fr] items-center h-20 gap-2 sm:gap-4">
           
-          {/* Brand Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-[#E8F5E9] flex items-center justify-center text-[#2E7D32] group-hover:bg-[#2E7D32] group-hover:text-white transition-all duration-300 shadow-xs">
-              <Leaf className="w-6 h-6 transition-transform group-hover:rotate-12" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-bold tracking-tight text-[#1F2937] flex items-center gap-1">
-                GreenBasket
-                <span className="text-xs text-[#2E7D32] bg-[#E8F5E9] px-1.5 py-0.5 rounded-full font-medium">🌱</span>
-              </span>
-              <span className="text-[10px] font-medium tracking-wide text-[#6B7280] -mt-0.5">
-                Shop Better. Live Greener.
-              </span>
-            </div>
-          </Link>
+          {/* 1. Left Section: Brand Logo + Desktop Search */}
+          <div className="flex items-center gap-3 lg:gap-5 min-w-0">
+            <Link to="/" className="flex items-center gap-2 group shrink-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#E8F5E9] flex items-center justify-center text-[#2E7D32] group-hover:bg-[#2E7D32] group-hover:text-white transition-all duration-300 shadow-xs">
+                <Leaf className="w-5 h-5 sm:w-6 sm:h-6 transition-transform group-hover:rotate-12" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-lg sm:text-xl font-bold tracking-tight text-[#1F2937] flex items-center gap-1">
+                  GreenBasket
+                  <span className="text-xs text-[#2E7D32] bg-[#E8F5E9] px-1.5 py-0.5 rounded-full font-medium">🌱</span>
+                </span>
+                <span className="text-[9px] sm:text-[10px] font-medium tracking-wide text-[#6B7280] -mt-0.5 hidden xs:block">
+                  Shop Better. Live Greener.
+                </span>
+              </div>
+            </Link>
 
-          {/* Desktop Search Bar */}
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
-            <form onSubmit={handleSearchSubmit} className="w-full relative">
-              <input
-                type="text"
-                placeholder="Search sustainable products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-[#F8FAF8] border border-gray-200 rounded-full text-sm text-[#1F2937] placeholder-gray-400 focus:outline-none focus:border-[#2E7D32] focus:ring-2 focus:ring-[#2E7D32]/20 transition-all"
-              />
-              <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            </form>
+            {/* Desktop Search Bar */}
+            <div className="hidden md:flex flex-1 max-w-[170px] lg:max-w-[200px] xl:max-w-[240px]">
+              <form onSubmit={handleSearchSubmit} className="w-full relative">
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-8 pr-3 py-2 bg-[#F8FAF8] border border-gray-200 rounded-full text-xs xl:text-sm text-[#1F2937] placeholder-gray-400 focus:outline-none focus:border-[#2E7D32] focus:ring-2 focus:ring-[#2E7D32]/20 transition-all"
+                />
+                <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              </form>
+            </div>
           </div>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center space-x-8 text-sm font-medium text-[#1F2937]">
+          {/* 2. Center Section: Main Navigation Links (Mathematically Centered) */}
+          <nav className="hidden lg:flex items-center justify-center space-x-4 xl:space-x-7 text-xs xl:text-sm font-medium text-[#1F2937] shrink-0">
             <Link to="/" className="hover:text-[#2E7D32] transition-colors">
               Home
             </Link>
@@ -136,21 +138,21 @@ const Navbar = () => {
               </>
             )}
             {isAdmin && (
-              <Link to="/admin" className="text-[#2E7D32] font-bold flex items-center gap-1 bg-[#E8F5E9] px-3 py-1 rounded-full text-xs">
-                <ShieldCheck className="w-3.5 h-3.5" /> Admin Dashboard
+              <Link to="/admin" className="text-[#2E7D32] font-bold flex items-center gap-1 bg-[#E8F5E9] px-2.5 py-1 rounded-full text-xs">
+                <ShieldCheck className="w-3.5 h-3.5" /> Admin
               </Link>
             )}
           </nav>
 
-          {/* Right Actions: Wishlist, Cart, User Account */}
-          <div className="hidden md:flex items-center space-x-4 ml-6">
+          {/* 3. Right Section: User Actions & Mobile Hamburger */}
+          <div className="flex items-center justify-end space-x-1.5 sm:space-x-3 shrink-0">
             <Link 
               to="/wishlist" 
-              className="p-2 text-gray-600 hover:text-[#2E7D32] hover:bg-[#E8F5E9] rounded-full transition-colors relative"
+              className="p-1.5 sm:p-2 text-gray-600 hover:text-[#2E7D32] hover:bg-[#E8F5E9] rounded-full transition-colors relative"
               title="Wishlist"
             >
               <Heart className={`w-5 h-5 ${wishlistCount > 0 ? 'text-red-500 fill-red-500' : ''}`} />
-              <span className={`absolute top-1 right-1 w-4 h-4 text-white text-[10px] font-bold rounded-full flex items-center justify-center ${
+              <span className={`absolute top-0.5 right-0.5 w-4 h-4 text-white text-[10px] font-bold rounded-full flex items-center justify-center ${
                 wishlistCount > 0 ? 'bg-red-500' : 'bg-gray-400'
               }`}>
                 {wishlistCount}
@@ -159,11 +161,11 @@ const Navbar = () => {
 
             <Link 
               to="/cart" 
-              className="p-2 text-gray-600 hover:text-[#2E7D32] hover:bg-[#E8F5E9] rounded-full transition-colors relative"
+              className="p-1.5 sm:p-2 text-gray-600 hover:text-[#2E7D32] hover:bg-[#E8F5E9] rounded-full transition-colors relative"
               title="Shopping Basket"
             >
               <ShoppingBag className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-4 h-4 bg-[#2E7D32] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+              <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-[#2E7D32] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                 {cartCount}
               </span>
             </Link>
@@ -173,20 +175,20 @@ const Navbar = () => {
               <div className="relative">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-2 p-1.5 border border-gray-200 rounded-full hover:border-[#2E7D32] transition-all bg-white"
+                  className="flex items-center gap-1.5 p-1 sm:p-1.5 border border-gray-200 rounded-full hover:border-[#2E7D32] transition-all bg-white"
                 >
                   {user?.photoURL ? (
                     <img 
                       src={user.photoURL} 
                       alt="User avatar" 
-                      className="w-7 h-7 rounded-full object-cover"
+                      className="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-7 h-7 rounded-full bg-[#E8F5E9] text-[#2E7D32] flex items-center justify-center text-xs font-bold">
+                    <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#E8F5E9] text-[#2E7D32] flex items-center justify-center text-xs font-bold">
                       {(mongoUser?.name || user?.email || 'U').charAt(0).toUpperCase()}
                     </div>
                   )}
-                  <span className="text-xs font-semibold text-[#1F2937] pr-2 max-w-[100px] truncate">
+                  <span className="text-xs font-semibold text-[#1F2937] pr-1.5 max-w-[80px] xl:max-w-[110px] truncate hidden sm:inline-block">
                     {mongoUser?.name || user?.displayName || 'Account'}
                   </span>
                 </button>
@@ -270,28 +272,27 @@ const Navbar = () => {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="hidden sm:flex items-center gap-1.5">
                 <Link
                   to="/login"
-                  className="px-4 py-2 text-xs font-semibold text-[#2E7D32] hover:bg-[#E8F5E9] rounded-full transition-colors"
+                  className="px-3 py-1.5 text-xs font-semibold text-[#2E7D32] hover:bg-[#E8F5E9] rounded-full transition-colors"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="px-4 py-2 text-xs font-semibold text-white bg-[#2E7D32] hover:bg-[#1B4332] rounded-full shadow-sm transition-colors"
+                  className="px-3 py-1.5 text-xs font-semibold text-white bg-[#2E7D32] hover:bg-[#1B4332] rounded-full shadow-xs transition-colors"
                 >
                   Register
                 </Link>
               </div>
             )}
-          </div>
 
-          {/* Mobile menu toggle */}
-          <div className="flex md:hidden items-center gap-2">
+            {/* Mobile Hamburger Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-gray-600 hover:text-[#2E7D32] hover:bg-[#E8F5E9]"
+              className="lg:hidden p-1.5 sm:p-2 rounded-xl text-gray-600 hover:text-[#2E7D32] hover:bg-[#E8F5E9] transition-colors"
+              aria-label="Toggle Mobile Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
